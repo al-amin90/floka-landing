@@ -3,6 +3,8 @@ import Navbar from "./Components/Sections/Navbar";
 import One from "./Components/Sections/One";
 import Hero from "./Components/Sections/Hero";
 import CarouselText from "./Components/Sections/LoopText";
+import Bigimg from "./Components/Sections/Bigimg";
+import Accordion from "./Components/Sections/Accordion";
 
 export default function Home() {
   return (
@@ -14,6 +16,13 @@ export default function Home() {
       <div>
         <p className="text-black">PORTFOLIO  </p>
       </div>
+      <div className="mt-3">
+        <Bigimg/>
+      </div>
+      <div>
+        <Accordion/>
+      </div>
+      
       
     </div>
   );
