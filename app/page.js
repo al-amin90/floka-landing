@@ -16,6 +16,7 @@ import Avengers from "./Components/Sections/Avengers";
 import FAQ from "./Components/Sections/FAQ";
 import SpinScroll from "./Components/Sections/SpinScroll";
 import Blog from "./Components/Sections/Blog";
+import Footer from "./Components/Sections/Footer";
 
 export default function Home() {
   return (
@@ -58,6 +59,9 @@ export default function Home() {
       </div>
       <div>
         <Blog/>
+      </div>
+      <div>
+        <Footer/>
       </div>
     </div>
   );
