@@ -10,6 +10,7 @@ import OverRide from "./Components/Sections/OverRide";
 import Users from "./Components/Sections/Users";
 import PlayReel from "./Components/Sections/PlayReel";
 import Feedbacks from "./Components/Sections/Feedbacks";
+import GetinTouch from "./Components/Sections/GetinTouch";
 
 export default function Home() {
   return (
@@ -37,6 +38,10 @@ export default function Home() {
       <div>
         <Feedbacks/>
       </div>
+      <div className="pt-[100px] rounded-[12px]">
+        <GetinTouch/>
+      </div>
+      
       
       
     </div>
