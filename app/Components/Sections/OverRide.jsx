@@ -8,41 +8,55 @@ const OverRide = () => {
   const currentY = useRef(0);
   const targetY = useRef(0);
   const rafId = useRef(null);
+  const isLocked = useRef(false);
+  const lockScrollY = useRef(0);
+  const accumulatedDelta = useRef(0);
 
- useEffect(() => {
-    const lerp = (start, end, factor) => start + (end - start) * factor;
+  useEffect(() => {
+    const lerp = (a, b, t) => a + (b - a) * t;
 
-    const calculate = () => {
+    const getMaxOffset = () => {
       const container = containerRef.current;
       const image = imageRef.current;
       if (!container || !image) return 0;
+      return Math.max(0, container.offsetHeight - image.offsetHeight);
+    };
 
-      const containerRect = container.getBoundingClientRect();
-      const viewportHeight = window.innerHeight;
-      const containerHeight = containerRect.height;
-      const imageHeight = image.offsetHeight;
-      const maxOffset = Math.max(0, containerHeight - imageHeight);
+    const isInView = () => {
+      const container = containerRef.current;
+      if (!container) return false;
+      const rect = container.getBoundingClientRect();
+      return rect.top <= 0 && rect.bottom >= window.innerHeight;
+    };
 
-      // Start: when container top enters viewport top
-      // End: when container bottom reaches viewport bottom
-      const start = containerRect.top;        // positive = not yet entered
-      const end = containerRect.bottom - viewportHeight; // negative = bottom passed viewport
+    const onWheel = (e) => {
+      const max = getMaxOffset();
+      const imageAtEnd = currentY.current >= max - 1;
+      const imageAtStart = currentY.current <= 1;
+      const scrollingDown = e.deltaY > 0;
+      const scrollingUp = e.deltaY < 0;
 
-      // progress 0 when top is at viewport top, 1 when bottom is at viewport bottom
-      const totalRange = containerHeight;
-      const scrolled = -start;
-      const progress = Math.max(0, Math.min(1, scrolled / totalRange));
+      if (!isInView()) return;
 
-      return progress * maxOffset;
+      // Lock scroll and accumulate delta to drive image
+      if ((scrollingDown && !imageAtEnd) || (scrollingUp && !imageAtStart)) {
+        e.preventDefault();
+        accumulatedDelta.current += e.deltaY * 1.4;
+        targetY.current = Math.max(0, Math.min(max, accumulatedDelta.current));
+      }
     };
 
     const tick = () => {
-      targetY.current = calculate();
-      currentY.current = lerp(currentY.current, targetY.current, 0.08);
+      const max = getMaxOffset();
+
+      currentY.current = lerp(currentY.current, targetY.current, 0.07);
 
       if (Math.abs(currentY.current - targetY.current) < 0.1) {
         currentY.current = targetY.current;
       }
+
+      // Sync accumulatedDelta with currentY so it stays in range
+      accumulatedDelta.current = Math.max(0, Math.min(max, accumulatedDelta.current));
 
       if (imageRef.current) {
         imageRef.current.style.transform = `translateY(${currentY.current}px)`;
@@ -51,9 +65,11 @@ const OverRide = () => {
       rafId.current = requestAnimationFrame(tick);
     };
 
+    window.addEventListener("wheel", onWheel, { passive: false });
     rafId.current = requestAnimationFrame(tick);
 
     return () => {
+      window.removeEventListener("wheel", onWheel);
       if (rafId.current) cancelAnimationFrame(rafId.current);
     };
   }, []);
@@ -62,10 +78,7 @@ const OverRide = () => {
     <div ref={containerRef} className="flex items-start gap-x-6 w-full mt-[35px]">
       {/* Left: Parallax image */}
       <div className="w-[40%] relative">
-        <div
-          ref={imageRef}
-          style={{ willChange: "transform" }}
-        >
+        <div ref={imageRef} style={{ willChange: "transform" }}>
           <Image
             src={"/img/people/Move.webp"}
             alt="OverRide"
@@ -89,7 +102,6 @@ const OverRide = () => {
         </div>
 
         <div className="flex gap-4 items-stretch flex-1">
-          {/* Column 1 */}
           <div className="flex flex-col gap-4 flex-1">
             <div className="bg-white rounded-[16px] border border-gray-100 shadow-sm p-5 flex items-center justify-between">
               <p className="text-[#0a0a0a] text-sm leading-snug">
@@ -102,28 +114,20 @@ const OverRide = () => {
 
             <div className="bg-[#0a0a0a] rounded-[16px] overflow-hidden flex flex-col flex-1">
               <div className="relative flex-1 min-h-[160px]">
-                <div
-                  className="w-[85px] h-[110px] rounded-[12px] overflow-hidden shadow-lg absolute"
-                  style={{ transform: "rotate(-12deg)", left: "12px", top: "50%", marginTop: "-55px", zIndex: 1 }}
-                >
+                <div className="w-[85px] h-[110px] rounded-[12px] overflow-hidden shadow-lg absolute"
+                  style={{ transform: "rotate(-12deg)", left: "12px", top: "50%", marginTop: "-55px", zIndex: 1 }}>
                   <Image src="/img/people/Move.webp" alt="work sample 1" width={85} height={110} className="object-cover w-full h-full" />
                 </div>
-                <div
-                  className="w-[85px] h-[110px] rounded-[12px] overflow-hidden shadow-lg absolute"
-                  style={{ transform: "rotate(0deg)", left: "50%", marginLeft: "-42px", top: "50%", marginTop: "-55px", zIndex: 3 }}
-                >
+                <div className="w-[85px] h-[110px] rounded-[12px] overflow-hidden shadow-lg absolute"
+                  style={{ transform: "rotate(0deg)", left: "50%", marginLeft: "-42px", top: "50%", marginTop: "-55px", zIndex: 3 }}>
                   <Image src="/img/people/Move.webp" alt="work sample 2" width={85} height={110} className="object-cover w-full h-full" />
                 </div>
-                <div
-                  className="w-[85px] h-[110px] rounded-[12px] overflow-hidden shadow-lg absolute"
-                  style={{ transform: "rotate(12deg)", right: "12px", top: "50%", marginTop: "-55px", zIndex: 1 }}
-                >
+                <div className="w-[85px] h-[110px] rounded-[12px] overflow-hidden shadow-lg absolute"
+                  style={{ transform: "rotate(12deg)", right: "12px", top: "50%", marginTop: "-55px", zIndex: 1 }}>
                   <Image src="/img/people/Move.webp" alt="work sample 3" width={85} height={110} className="object-cover w-full h-full" />
                 </div>
-                <div
-                  className="absolute bottom-0 left-0 right-0 h-[70px] pointer-events-none"
-                  style={{ background: "linear-gradient(to bottom, transparent, #0a0a0a)" }}
-                />
+                <div className="absolute bottom-0 left-0 right-0 h-[70px] pointer-events-none"
+                  style={{ background: "linear-gradient(to bottom, transparent, #0a0a0a)" }} />
               </div>
               <div className="px-5 pb-5 pt-2">
                 <p className="text-white text-base font-semibold leading-snug">
@@ -133,7 +137,6 @@ const OverRide = () => {
             </div>
           </div>
 
-          {/* Column 2 */}
           <div className="flex flex-col gap-4 flex-1">
             <div className="bg-white rounded-[16px] border border-gray-100 shadow-sm p-[34px] flex flex-col gap-y-[20px]">
               <div className="flex gap-x-1">
