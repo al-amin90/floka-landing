@@ -15,6 +15,7 @@ import Bars from "./Components/Sections/Bars";
 import Avengers from "./Components/Sections/Avengers";
 import FAQ from "./Components/Sections/FAQ";
 import SpinScroll from "./Components/Sections/SpinScroll";
+import Blog from "./Components/Sections/Blog";
 
 export default function Home() {
   return (
@@ -54,6 +55,9 @@ export default function Home() {
       </div>
       <div className="py-[50px]">
         <SpinScroll />
+      </div>
+      <div>
+        <Blog/>
       </div>
     </div>
   );
