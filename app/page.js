@@ -5,6 +5,7 @@ import Hero from "./Components/Sections/Hero";
 import CarouselText from "./Components/Sections/LoopText";
 import Bigimg from "./Components/Sections/Bigimg";
 import Accordion from "./Components/Sections/Accordion";
+import OverRide from "./Components/Sections/OverRide";
 
 export default function Home() {
   return (
@@ -21,6 +22,9 @@ export default function Home() {
       </div>
       <div>
         <Accordion/>
+      </div>
+      <div>
+        <OverRide/>
       </div>
       
       
