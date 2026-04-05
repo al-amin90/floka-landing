@@ -11,39 +11,50 @@ import Users from "./Components/Sections/Users";
 import PlayReel from "./Components/Sections/PlayReel";
 import Feedbacks from "./Components/Sections/Feedbacks";
 import GetinTouch from "./Components/Sections/GetinTouch";
+import Bars from "./Components/Sections/Bars";
+import Avengers from "./Components/Sections/Avengers";
+import FAQ from "./Components/Sections/FAQ";
+import SpinScroll from "./Components/Sections/SpinScroll";
 
 export default function Home() {
   return (
     <div className="p-4">
-      <Navbar/>
-      <Hero/>
-      <One/>
-      <CarouselText/>
+      <Navbar />
+      <Hero />
+      <One />
+      <CarouselText />
       <div>
-        <p className="text-black">PORTFOLIO  </p>
+        <p className="text-black">PORTFOLIO </p>
       </div>
       <div className="mt-3">
-        <Bigimg/>
+        <Bigimg />
       </div>
       <div>
-        <Accordion/>
+        <Accordion />
       </div>
       <div>
-        <OverRide/>
+        <OverRide />
       </div>
       <div>
-        <Users/>
+        <Users />
       </div>
-      <PlayReel/>
+      <PlayReel />
       <div>
-        <Feedbacks/>
+        <Feedbacks />
       </div>
       <div className="pt-[100px] rounded-[12px]">
-        <GetinTouch/>
+        <GetinTouch />
       </div>
-      
-      
-      
+      <Bars />
+      <div>
+        <Avengers />
+      </div>
+      <div className="pt-[100px]">
+        <FAQ />
+      </div>
+      <div className="py-[50px]">
+        <SpinScroll />
+      </div>
     </div>
   );
 }
